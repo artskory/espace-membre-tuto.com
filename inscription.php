@@ -35,7 +35,10 @@
         }
         
         if ( !$erreur ) {
-            // insertion du nouveau membre en bdd
+            bdd_insert( 'INSERT INTO membre (mail, password) VALUES (:mail, :password)', [
+                'mail' => $email,
+                'password' => password_hash( $password, PASSWORD_DEFAULT )
+            ] );
             
             unset( $email);
             

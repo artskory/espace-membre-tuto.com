@@ -21,7 +21,14 @@
             $name = bin2hex( random_bytes( 8 ) ) . '.' . $extention;
             
             if ( move_uploaded_file( $_FILES['avatar']['tmp_name'], 'img/' . $name ) ){
-                // mise a jpor de la bdd et suppression ancienne image
+                bdd_update( 'UPDATE membre SET avatar = :avatar WHERE id = :id', [
+                    'avatar' => $name,
+                    'id' => $_SESSION['id']
+                ]);
+                
+                if ( $membre['avatar'] != 'default-profile.png' ) {
+                    unlink( 'img/' . $membre['avatar'] );
+                }
                 
                 header( 'Location: avatar.php');
             }
@@ -48,7 +55,7 @@
         <div class="col-xl-4 col-xl-offset-4 col-md-6 col-md-offset-3">
           <h1 class="text-xs-center">Changer d'avatar</h2>
           <div class="center-block">
-            <img src="" alt="avatar" class="img-circle img-fluid">
+              <img src="img/<?= $membre['avatar'] ?>" alt="avatar" class="img-circle img-fluid">
           </div>
             <?php if ( isset( $erreur ) ) : ?>
                 <div class="alert alert-danger"><?= $erreur ?></div>
